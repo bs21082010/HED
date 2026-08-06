@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# android build
+android/.gradle/
+android/app/build/
+android/app/release.keystore
+android/keystore.properties
+android/local.properties
+android/capacitor-cordova-android-plugins/build/
+
+# python
+backend/.venv/
+__pycache__/
+*.pyc
+
+# runtime data
+backend/dorm.db
+backend/sms_outbox.log
+*.log
+
+# misc
+.DS_Store
+Thumbs.db
+.env
+.env.local
