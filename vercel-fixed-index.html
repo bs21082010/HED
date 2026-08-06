@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ITC - Download</title>
+  <meta name="description" content="Download the ITC app. Latest APK versions.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0e17; color: #c9d4e3; font-family: "Courier New", ui-monospace, monospace; min-height: 100vh; }
+    .container { max-width: 760px; margin: 0 auto; padding: 32px 20px; }
+    .hero-label { color: #5ecd8e; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    h1 { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .tagline { color: #8b98ad; font-size: 14px; margin-bottom: 28px; }
+    .tagline b { color: #5ecd8e; }
+    .term { background: #0d1322; border: 1px solid #1c2942; border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    .term-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #131a2c; border-bottom: 1px solid #1c2942; }
+    .term-bar .title { margin-left: 8px; color: #64748c; font-size: 12px; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #f87171; } .dot.y { background: #fbbf24; } .dot.g { background: #34d399; }
+    .term-body { padding: 16px 14px; font-size: 13px; line-height: 1.8; }
+    .prompt { color: #34d399; }
+    .out { color: #aeb9cc; min-height: 18px; white-space: pre-wrap; }
+    .out .hl { color: #5ecd8e; font-weight: bold; }
+    .cursor { display: inline-block; width: 8px; height: 15px; background: #34d399; animation: blink 1s step-start infinite; vertical-align: middle; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .stats { display: flex; gap: 16px; flex-wrap: wrap; }
+    .stat { flex: 1; min-width: 140px; background: #0d101f; border: 1px solid #1c2942; border-radius: 12px; padding: 14px 16px; }
+    .stat-value { font-size: 26px; font-weight: 700; color: #fff; }
+    .stat-label { font-size: 10px; color: #64748c; letter-spacing: 1.5px; margin-top: 2px; display: block; }
+    .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #34d399; margin-right: 6px; animation: blink 1.5s infinite; }
+    .card { background: #0d101f; border: 1px solid #1c2942; border-radius: 12px; overflow: hidden; margin-bottom: 18px; }
+    .card-body { padding: 18px 16px; }
+    .v-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .v-label { font-size: 11px; color: #64748c; text-transform: uppercase; letter-spacing: 1.5px; }
+    .v-number { font-size: 20px; font-weight: 700; color: #fff; }
+    .tag-latest { background: #14532d; color: #5ecd8e; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; letter-spacing: 1px; }
+    .meta { color: #8b98ad; font-size: 12px; margin-bottom: 12px; }
+    .notes { color: #aeb9cc; font-size: 12px; white-space: pre-wrap; background: #131a2c; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; }
+    .download-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .dl-count { color: #64748c; font-size: 12px; }
+    .btn { background: #1d4ed8; color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 11px 22px; border-radius: 8px; }
+    .btn:hover { background: #2563eb; }
+    .error { color: #f87171; font-size: 13px; margin-bottom: 18px; }
+    .hidden { display: none !important; }
+    .empty { color: #8b98ad; font-size: 13px; line-height: 2; }
+    .footer { text-align: center; color: #64748c; font-size: 12px; padding: 28px 20px; }
+    .ok { color: #34d399; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <div class="hero-label">android release server</div>
+      <h1 id="appName"></h1>
+      <p class="tagline" id="tagline"></p>
+
+      <div class="term">
+        <div class="term-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">itc@releases: ~/apks</span>
+        </div>
+        <div class="term-body">
+          <div class="line"><span class="prompt">$</span> itc --check-update --latest</div>
+          <div class="out" id="termOutput"></div>
+          <div class="line"><span class="prompt">$</span><span class="cursor"></span></div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span class="stat-value" id="statVersions">0</span><span class="stat-label">RELEASES</span></div>
+        <div class="stat"><span class="stat-value" id="statDownloads">0</span><span class="stat-label">DOWNLOADS</span></div>
+        <div class="stat"><span class="stat-value"><span class="pulse"></span>online</span><span class="stat-label">SERVER</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="error" class="error hidden"></div>
+    <div id="list"></div>
+    <p id="empty" class="empty hidden"><span class="prompt">$</span> find releases --latest<br>no releases found. check back soon.</p>
+  </main>
+
+  <footer class="footer"><span class="ok">&#9632;</span> itc_release_server &middot; all systems operational &middot; <span id="year"></span></footer>
+
+  <script>
+    // config
+    var APP_URL = "https://iqfmvqdyrajrugghcetb.supabase.co";
+    var APP_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlxZm12cWR5cmFqcnVnZ2hjZXRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNDQxODAsImV4cCI6MjEwMDYyMDE4MH0.xfmaddaRioiTM5c7HF6iIvHtqS9PREEotm8F_MbjV9k";
+    var BUCKET_NAME = "apks";
+    var APP_NAME = "ITC";
+    var SITE_URL = APP_URL + "/storage/v1/object/public/" + BUCKET_NAME + "/";
+    var API_URL = APP_URL + "/rest/v1/";
+
+    document.getElementById("appName").textContent = APP_NAME;
+    document.getElementById("tagline").innerHTML = "itc://" + APP_NAME.toLowerCase() + " <b>v2.1.0</b> &middot; direct apk distribution";
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function fmtSize(b) {
+      if (b < 1024) return b + " B";
+      var u = ["KB", "MB", "GB"], v = b, i = -1;
+      while (v >= 1024 && i < 2) { v /= 1024; i++; }
+      return v.toFixed(v >= 100 ? 0 : 1) + " " + u[i];
+    }
+    function fmtDate(iso) {
+      var d = new Date(iso);
+      return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    }
+    function esc(s) {
+      var div = document.createElement("div");
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    function card(v, isLatest) {
+      var el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML =
+        '<div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>' +
+        '<span class="title">~/releases/' + esc(v.file_name) + '</span></div>' +
+        '<div class="card-body">' +
+          '<div class="v-line"><span class="v-label">release</span><span class="v-number">v' + esc(v.version_name) + '</span>' +
+          (isLatest ? '<span class="tag-latest">LATEST</span>' : '') + '</div>' +
+          '<div class="meta"><span class="prompt">$</span> ls -la release.apk &middot; ' + esc(v.file_name) + ' &middot; ' +
+          fmtSize(v.file_size) + ' &middot; ' + fmtDate(v.created_at) +
+          (v.version_code ? ' &middot; code ' + v.version_code : '') + '</div>' +
+          (v.notes ? '<div class="notes">$ itc changelog --release v' + esc(v.version_name) + "\n" + esc(v.notes) + '</div>' : '') +
+          '<div class="download-row"><span class="dl-count"><b>' + (v.download_count || 0).toLocaleString() + '</b> downloads</span>' +
+          '<a class="btn" href="' + SITE_URL + encodeURIComponent(v.storage_path) + '" download="' + esc(v.file_name) + '">&#9658; download apk</a></div>' +
+        '</div>';
+      var btn = el.querySelector(".btn");
+      btn.addEventListener("click", function () {
+        try {
+          fetch(API_URL + "rpc/increment_download", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "apikey": APP_ANON_KEY, "Authorization": "Bearer " + APP_ANON_KEY },
+            body: JSON.stringify({ p_id: v.id })
+          }).catch(function () {});
+        } catch (e) {}
+        v.download_count = (v.download_count || 0) + 1;
+        el.querySelector(".dl-count").innerHTML = '<b>' + v.download_count.toLocaleString() + '</b> downloads';
+      });
+      return el;
+    }
+
+    function load() {
+      fetch(API_URL + "apk_versions?select=*&order=created_at.desc", {
+        headers: { "apikey": APP_ANON_KEY, "Authorization": "Bearer " + APP_ANON_KEY }
+      })
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (data) {
+          document.getElementById("statVersions").textContent = data.length;
+          document.getElementById("statDownloads").textContent = data.reduce(function (s, v) { return s + (v.download_count || 0); }, 0).toLocaleString();
+          var latest = data[0];
+          document.getElementById("termOutput").innerHTML = latest
+            ? '> latest build: <span class="hl">v' + esc(latest.version_name) + '</span> &middot; ' + data.length + ' release(s) online &middot; ' + fmtSize(latest.file_size)
+            : "> no releases online yet &middot; awaiting first build";
+          document.getElementById("empty").classList.toggle("hidden", data.length > 0);
+          var list = document.getElementById("list");
+          list.innerHTML = "";
+          data.forEach(function (v, i) { list.appendChild(card(v, i === 0)); });
+        })
+        .catch(function (err) {
+          document.getElementById("error").textContent = "connection error: " + err.message;
+          document.getElementById("error").classList.remove("hidden");
+        });
+    }
+    load();
+  </script>
+</body>
+</html>

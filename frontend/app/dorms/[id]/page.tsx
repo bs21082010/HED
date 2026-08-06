@@ -213,7 +213,7 @@ export default function DormPage() {
         </>
       }
     >
-      <div className="mb-5 flex flex-wrap gap-2">
+      <div className="anim-fade-up mb-5 flex flex-wrap gap-2">
         {(
           [
             ["normal", "Normal", "bg-green-50 text-green-700 border-green-200"],
@@ -221,10 +221,13 @@ export default function DormPage() {
             ["red", "Extra Drill", "bg-red-50 text-red-700 border-red-200"],
             ["empty", "Empty", "bg-slate-50 text-slate-500 border-slate-200"],
           ] as const
-        ).map(([key, label, cls]) => (
+        ).map(([key, label, cls], i) => (
           <span
             key={key}
-            className={`rounded-full border px-3 py-1.5 text-xs font-bold ${cls}`}
+            className={`anim-pop rounded-full border px-3 py-1.5 text-xs font-bold ${cls} ${
+              key === "red" && counts[key] > 0 ? "anim-pulse-soft" : ""
+            }`}
+            style={{ animationDelay: `${0.05 + i * 0.06}s` }}
           >
             {label} · {counts[key]}
           </span>

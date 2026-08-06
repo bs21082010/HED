@@ -141,6 +141,19 @@ export const api = {
   },
   edSchedule: () => request<EdAssignment[]>("/api/ed"),
   contacts: () => request<Contact[]>("/api/contacts"),
+  createContact: (c: { name: string; role: string; phone: string }) =>
+    request<Contact>("/api/contacts", { method: "POST", body: JSON.stringify(c) }),
+  updateContact: (id: number, c: { name: string; role: string; phone: string }) =>
+    request<Contact>(`/api/contacts/${id}`, { method: "PUT", body: JSON.stringify(c) }),
+  deleteContact: (id: number) =>
+    request<void>(`/api/contacts/${id}`, { method: "DELETE" }),
+  cadets: () => request<Cadet[]>("/api/cadets"),
+  createCadet: (c: { name: string; house_id: number; cadet_class: string }) =>
+    request<Cadet>("/api/cadets", { method: "POST", body: JSON.stringify({ ...c, dorm_id: null }) }),
+  updateCadet: (id: number, c: { name: string; house_id: number; cadet_class: string }) =>
+    request<Cadet>(`/api/cadets/${id}`, { method: "PUT", body: JSON.stringify({ ...c, dorm_id: null }) }),
+  deleteCadet: (id: number) =>
+    request<void>(`/api/cadets/${id}`, { method: "DELETE" }),
   raiseAlert: (bedId: number, type: AlertType, message = "", drillType: "ED" | "HED" = "ED") =>
     request<Alert>(`/api/beds/${bedId}/alerts`, {
       method: "POST",

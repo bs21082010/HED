@@ -24,3 +24,31 @@ def create_contact(payload: ContactCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(contact)
     return contact
+
+
+@router.put("/{contact_id}", response_model=ContactOut)
+def update_contact(
+    contact_id: int, payload: ContactCreate, db: Session = Depends(get_db)
+):
+    contact = db.get(Contact, contact_id)
+    if contact is None:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    dup = db.query(Contact).filter(
+        Contact.phone == payload.phone, Contact.id != contact_id
+    ).first()
+    if dup:
+        raise HTTPException(status_code=409, detail="Phone number already registered")
+    for field, value in payload.model_dump().items():
+        setattr(contact, field, value)
+    db.commit()
+    db.refresh(contact)
+    return contact
+
+
+@router.delete("/{contact_id}", status_code=204)
+def delete_contact(contact_id: int, db: Session = Depends(get_db)):
+    contact = db.get(Contact, contact_id)
+    if contact is None:
+        raise HTTPException(status_code=404, detail="Contact not found")
+    db.delete(contact)
+    db.commit()

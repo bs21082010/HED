@@ -102,6 +102,16 @@ export default function AppShell({
           <NavLink href="/" active={pathname === "/"} icon="◧">
             Dashboard
           </NavLink>
+          <NavLink
+            href="/contacts"
+            active={pathname === "/contacts"}
+            icon="☎"
+          >
+            Contacts
+          </NavLink>
+          <NavLink href="/cadets" active={pathname === "/cadets"} icon="✧">
+            Cadets
+          </NavLink>
 
           <p className="px-2 pb-1 pt-4 text-[10px] font-bold uppercase tracking-widest text-slate-600">
             Flanks
@@ -177,7 +187,7 @@ export default function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <main className="anim-fade-up flex-1 p-4 md:p-6">{children}</main>
 
         <footer className="border-t border-slate-200 bg-white px-6 py-3 text-center text-[11px] text-slate-400">
           Sainik School Ambikapur · Digital Dormitory Discipline & Alert

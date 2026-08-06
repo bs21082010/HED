@@ -1,10 +1,34 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { api, type Alert, type Dorm, type DormMap } from "@/lib/api";
 import AppShell from "@/components/AppShell";
 import EdOverview from "@/components/EdOverview";
+
+function useCountUp(target: number, duration = 700): number {
+  const [val, setVal] = useState(0);
+  const prev = useRef(0);
+  useEffect(() => {
+    const from = prev.current;
+    if (target === from) {
+      setVal(target);
+      return;
+    }
+    const start = performance.now();
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min((t - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(Math.round(from + (target - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else prev.current = target;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+  return val;
+}
 
 type Stats = {
   cadets: number;
@@ -107,26 +131,13 @@ export default function Home() {
       )}
 
       <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {KPI_CARDS.map((k) => (
-          <div
+        {KPI_CARDS.map((k, i) => (
+          <KpiCard
             key={k.key}
-            className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
-          >
-            <div className={`h-1.5 bg-gradient-to-r ${k.classes}`} />
-            <div className="p-4">
-              <p className="text-3xl font-black text-slate-800">
-                {stats[k.key]}
-              </p>
-              <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                <span
-                  className={`flex h-5 w-5 items-center justify-center rounded ${k.bar} text-[10px] font-bold text-white`}
-                >
-                  {k.icon}
-                </span>
-                {k.label}
-              </p>
-            </div>
-          </div>
+            k={k}
+            value={stats[k.key]}
+            delay={i * 0.08}
+          />
         ))}
       </section>
 
@@ -138,7 +149,7 @@ export default function Home() {
           </span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {dorms.map((d) => {
+          {dorms.map((d, i) => {
             const m = maps.find((x) => x.id === d.id);
             const reds = m?.beds.filter((b) => b.status === "red").length ?? 0;
             const warns = m?.beds.filter((b) => b.status === "warning").length ?? 0;
@@ -148,19 +159,23 @@ export default function Home() {
               <Link
                 key={d.id}
                 href={`/dorms/${d.id}`}
-                className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
+                className="anim-fade-up group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg"
+                style={{ animationDelay: `${0.15 + i * 0.07}s` }}
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-700">
+                    <h3 className="text-base font-bold text-slate-800 transition-colors group-hover:text-blue-700">
                       {d.name}
                     </h3>
                     <p className="mt-0.5 text-xs text-slate-500">
                       {d.house.name}
                     </p>
                   </div>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-600">
+                  <span className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-sm font-bold text-slate-600">
                     {occ}
+                    {reds > 0 && (
+                      <span className="anim-pulse-soft absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+                    )}
                   </span>
                 </div>
                 <div className="mt-4 flex items-center gap-2">
@@ -195,8 +210,12 @@ export default function Home() {
             </p>
           ) : (
             <ul className="divide-y divide-slate-100">
-              {alerts.slice(0, 7).map((a) => (
-                <li key={a.id} className="flex items-center gap-3 py-2.5">
+              {alerts.slice(0, 7).map((a, i) => (
+                <li
+                  key={a.id}
+                  className="anim-slide flex items-center gap-3 py-2.5"
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                >
                   <span
                     className={`rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${TYPE_BADGE[a.type]}`}
                   >
@@ -239,5 +258,44 @@ function StatusPill({ color, count }: { color: "green" | "amber" | "red"; count:
     <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${styles}`}>
       {count}
     </span>
+  );
+}
+
+function KpiCard({
+  k,
+  value,
+  delay,
+}: {
+  k: (typeof KPI_CARDS)[number];
+  value: number;
+  delay: number;
+}) {
+  const n = useCountUp(value);
+  const live = k.key === "red" && value > 0;
+  return (
+    <div
+      className={`anim-fade-up overflow-hidden rounded-xl border bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
+        live ? "anim-glow-red border-red-200" : "border-slate-200"
+      }`}
+      style={{ animationDelay: `${delay}s` }}
+    >
+      <div className={`h-1.5 bg-gradient-to-r ${k.classes}`} />
+      <div className="p-4">
+        <p className="flex items-center gap-2 text-3xl font-black tabular-nums text-slate-800">
+          {n}
+          {live && (
+            <span className="anim-pulse-soft inline-block h-2.5 w-2.5 rounded-full bg-red-500" />
+          )}
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+          <span
+            className={`flex h-5 w-5 items-center justify-center rounded ${k.bar} text-[10px] font-bold text-white`}
+          >
+            {k.icon}
+          </span>
+          {k.label}
+        </p>
+      </div>
+    </div>
   );
 }

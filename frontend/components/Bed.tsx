@@ -103,9 +103,12 @@ export default function Bed({
             : "Unoccupied bed"
       }
       aria-label={label}
-      className={`relative flex h-24 flex-col items-center justify-center rounded-lg border-2 p-2 transition-colors shadow-sm ${
-        editing ? "cursor-grab active:cursor-grabbing ring-2 ring-blue-200" : ""
-      } ${styles}`}
+className={`relative flex h-24 flex-col items-center justify-center rounded-lg border-2 p-2 shadow-sm transition-all duration-150 hover:scale-[1.03] hover:shadow-md ${
+        bed.status === "red"
+          ? "anim-glow-red"
+          : ""
+      } ${editing ? "cursor-grab active:cursor-grabbing ring-2 ring-blue-200" : ""} ${styles}`}
+
     >
       <span className="pointer-events-none absolute left-1.5 top-1.5 text-[10px] font-semibold text-slate-400">
         B{bed.row}-{bed.col}
