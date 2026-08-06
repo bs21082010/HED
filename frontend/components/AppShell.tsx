@@ -23,6 +23,11 @@ export default function AppShell({
   const [serverUrl, setServerUrl] = useState("");
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<null | boolean>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const load = async () => {
@@ -64,7 +69,17 @@ export default function AppShell({
 
   return (
     <div className="flex min-h-screen">
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-slate-900 text-slate-300">
+      <div
+        className={`fixed inset-0 z-30 bg-slate-900/60 transition-opacity lg:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setMenuOpen(false)}
+      />
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-slate-900 text-slate-300 transition-transform lg:translate-x-0 ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div className="flex items-center gap-3 border-b border-slate-800 px-5 py-5">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-lg font-black text-slate-900 shadow-lg">
             SSA
@@ -111,13 +126,26 @@ export default function AppShell({
         </div>
       </aside>
 
-      <div className="ml-64 flex min-h-screen flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-slate-200 bg-white/90 px-6 py-3 backdrop-blur">
-          <div>
-            <h1 className="text-lg font-bold text-slate-800">{title}</h1>
-            {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
+      <div className="flex min-h-screen flex-1 flex-col lg:ml-64">
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur md:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <button
+              onClick={() => setMenuOpen(true)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 lg:hidden"
+              title="Menu"
+            >
+              ☰
+            </button>
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-bold text-slate-800 md:text-lg">
+                {title}
+              </h1>
+              {subtitle && (
+                <p className="truncate text-xs text-slate-500">{subtitle}</p>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-3 md:gap-4">
             {actions}
             <div className="hidden items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1.5 md:flex">
               <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
@@ -149,7 +177,7 @@ export default function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-4 md:p-6">{children}</main>
 
         <footer className="border-t border-slate-200 bg-white px-6 py-3 text-center text-[11px] text-slate-400">
           Sainik School Ambikapur · Digital Dormitory Discipline & Alert

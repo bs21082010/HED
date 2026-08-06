@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .database import Base, engine, SessionLocal
-from .routers import alerts, beds, cadets, contacts, dorms, ed, sms
+from .routers import alerts, beds, cadets, contacts, download, dorms, ed, sms
 
 
 @asynccontextmanager
@@ -38,6 +38,7 @@ app.include_router(alerts.router)
 app.include_router(ed.router)
 app.include_router(sms.router)
 app.include_router(contacts.router)
+app.include_router(download.router)
 
 
 @app.get("/api/health", tags=["meta"])
