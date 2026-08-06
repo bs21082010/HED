@@ -6,12 +6,11 @@ node_modules/
 out/
 
 # android build
-android/.gradle/
-android/app/build/
-android/app/release.keystore
-android/keystore.properties
-android/local.properties
-android/capacitor-cordova-android-plugins/build/
+**/.gradle/
+**/build/
+**/release.keystore
+**/keystore.properties
+**/local.properties
 
 # python
 backend/.venv/
