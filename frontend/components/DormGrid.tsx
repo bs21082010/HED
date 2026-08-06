@@ -103,8 +103,8 @@ export default function DormGrid({
             onDragLeave={() => setOverEmpty(null)}
             className={`flex min-h-[5.5rem] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed p-2 transition-colors ${
               overEmpty === `${r}:${c}` && dragId.current !== null
-                ? "border-blue-400 bg-blue-50"
-                : "border-slate-300 text-slate-400 hover:border-slate-400 hover:text-slate-500"
+                ? "border-cyan-400 bg-cyan-500/15"
+                : "border-white/10 text-slate-500 hover:border-cyan-400/40 hover:text-cyan-300"
             }`}
           >
             <span className="text-[10px] font-semibold">R{r}C{c}</span>
@@ -117,7 +117,7 @@ export default function DormGrid({
 
   return (
     <>
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-white/5 bg-[#11183a] p-4 shadow-lg shadow-black/20">
         <div
           className="grid gap-3"
           style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
@@ -128,8 +128,8 @@ export default function DormGrid({
 
       {confirm && confirm.cadet && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-800">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#151d42] p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-white">
               Confirm Red Alert
             </h3>
             <p className="mt-2 text-sm text-slate-500">
@@ -148,7 +148,7 @@ export default function DormGrid({
                   className={`rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                     drillType === t
                       ? "border-red-500 bg-red-50 text-red-700"
-                      : "border-slate-200 text-slate-500 hover:border-slate-400"
+                      : "border-white/10 text-slate-500 hover:border-cyan-400/40"
                   }`}
                 >
                   {t === "ED" ? "Extra Drill" : "House Extra Drill"}
@@ -161,7 +161,7 @@ export default function DormGrid({
             <div className="mt-5 flex justify-end gap-3">
               <button
                 onClick={() => setConfirm(null)}
-                className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300 hover:bg-white/10"
               >
                 Cancel
               </button>

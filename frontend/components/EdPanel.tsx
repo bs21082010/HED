@@ -29,7 +29,7 @@ export default function EdPanel({ assignments }: { assignments: EdAssignment[] }
           No cadets on drill duty today.
         </p>
       ) : (
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-white/5">
           {todays.map((e) => (
             <li key={e.id} className="flex items-center gap-3 py-2">
               <span
@@ -50,7 +50,7 @@ export default function EdPanel({ assignments }: { assignments: EdAssignment[] }
         </ul>
       )}
       {assignments.length > todays.length && (
-        <p className="mt-3 border-t border-slate-100 pt-2 text-[11px] text-slate-400">
+        <p className="mt-3 border-t border-white/5 pt-2 text-[11px] text-slate-500">
           +{assignments.length - todays.length} earlier assignment
           {assignments.length - todays.length > 1 ? "s" : ""} this period
         </p>

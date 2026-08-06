@@ -22,7 +22,7 @@ export default function AlertPanel({
     );
   }
   return (
-    <ul className="max-h-96 divide-y divide-slate-100 overflow-y-auto">
+    <ul className="max-h-96 divide-y divide-white/5 overflow-y-auto">
       {alerts.map((a) => (
         <li key={a.id} className="flex items-start gap-3 py-3">
           <span

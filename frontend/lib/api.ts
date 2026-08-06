@@ -95,7 +95,7 @@ export type SmsResult = {
 };
 
 const DEFAULT_API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://192.168.1.34:8000";
 
 const STORAGE_KEY = "ssa_api_url";
 
@@ -103,12 +103,26 @@ export function getApiUrl(): string {
   if (typeof window !== "undefined") {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved) return saved.replace(/\/+$/, "");
+    try {
+      const host = window.location.hostname;
+      if (host && host !== "localhost" && host !== "127.0.0.1") {
+        return `http://${host}:8000`;
+      }
+    } catch {
+      /* ignore */
+    }
   }
   return DEFAULT_API_URL;
 }
 
 export function setApiUrl(url: string) {
   window.localStorage.setItem(STORAGE_KEY, url.replace(/\/+$/, ""));
+}
+
+export function resetApiUrl() {
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
 }
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {

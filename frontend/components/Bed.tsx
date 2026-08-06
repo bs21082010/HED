@@ -5,12 +5,12 @@ import type { AlertType, BedWithCadet } from "@/lib/api";
 
 const STATUS_STYLES: Record<string, string> = {
   empty:
-    "border-dashed border-slate-300 bg-slate-50 text-slate-400 cursor-not-allowed",
+    "border-dashed border-white/15 bg-white/5 text-slate-500 cursor-not-allowed",
   normal:
-    "border-green-300 bg-green-50 text-green-900 hover:bg-green-100",
+    "border-emerald-500/30 bg-emerald-500/10 text-emerald-200 hover:border-emerald-400/50 hover:bg-emerald-500/15",
   warning:
-    "border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100",
-  red: "border-red-300 bg-red-50 text-red-900 hover:bg-red-100",
+    "border-amber-500/30 bg-amber-500/10 text-amber-200 hover:border-amber-400/50 hover:bg-amber-500/15",
+  red: "border-red-500/40 bg-red-500/15 text-red-200 hover:bg-red-500/20",
 };
 
 const STATUS_DOT: Record<string, string> = {
@@ -163,7 +163,7 @@ className={`relative flex h-24 flex-col items-center justify-center rounded-lg b
           onKeyDown={(e) => {
             if (e.key === "Enter") (e.target as HTMLInputElement).blur();
           }}
-          className="pointer-events-auto mt-1 w-full rounded border border-slate-200 bg-white px-1 py-0.5 text-center text-[9px] text-slate-600 outline-none focus:border-blue-500"
+          className="pointer-events-auto mt-1 w-full rounded border border-white/15 bg-black/40 px-1 py-0.5 text-center text-[9px] text-white outline-none focus:border-cyan-400"
         />
       ) : (
         bed.location && (
@@ -174,7 +174,7 @@ className={`relative flex h-24 flex-col items-center justify-center rounded-lg b
       )}
 
       {pending && (
-        <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg bg-white/80 text-[10px] font-bold uppercase tracking-wider text-slate-700">
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 text-[10px] font-bold uppercase tracking-wider text-white">
           {pending === "red" ? "ED/HED" : "Warning"}
         </span>
       )}

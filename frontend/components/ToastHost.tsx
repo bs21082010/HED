@@ -32,9 +32,9 @@ function Toast({ toast, onDismiss }: { toast: Toast; onDismiss: (id: number) => 
   }, [toast.id, onDismiss]);
 
   const styles = {
-    ok: "border-green-300 bg-white text-green-800",
-    error: "border-red-300 bg-white text-red-700",
-    info: "border-slate-300 bg-white text-slate-700",
+    ok: "border-emerald-400/30 bg-[#11183a] text-emerald-300",
+    error: "border-red-500/30 bg-[#11183a] text-red-300",
+    info: "border-white/10 bg-[#11183a] text-slate-200",
   }[toast.kind];
 
   return (

@@ -182,15 +182,15 @@ export default function Scanner({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-white/10 bg-[#151d42] p-6 shadow-2xl">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-slate-800">Scan dorm room</h3>
+          <h3 className="text-lg font-bold text-white">Scan dorm room</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
             ✕
           </button>
         </div>
 
-        <label className="mb-4 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center hover:border-blue-400">
+        <label className="mb-4 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/15 bg-white/5 p-6 text-center hover:border-cyan-400">
           <input
             type="file"
             accept="image/*"
@@ -209,7 +209,7 @@ export default function Scanner({
           <button
             onClick={scan}
             disabled={busy}
-            className="mb-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-50"
+            className="mb-4 rounded-lg bg-gradient-to-r from-cyan-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
           >
             {busy ? "Analysing…" : layout ? "Re-analyse" : "Analyse room"}
           </button>
@@ -221,13 +221,13 @@ export default function Scanner({
           </p>
         )}
 
-        {boxes.length > 0 && <canvas ref={canvasRef} className="mb-4 w-full rounded-lg border border-slate-200" />}
+        {boxes.length > 0 && <canvas ref={canvasRef} className="mb-4 w-full rounded-lg border border-white/10" />}
 
         {summary && <p className="mb-3 text-sm font-semibold text-green-700">{summary}</p>}
 
         {layout && (
           <>
-            <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-4 rounded-xl border border-white/10 bg-white/5 p-4">
               <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
                 Generated layout
               </p>
@@ -237,12 +237,12 @@ export default function Scanner({
                     <span
                       key={i}
                       title={item.location}
-                      className="rounded bg-blue-100 px-1 py-2 text-center text-[10px] font-semibold text-blue-700"
+                      className="rounded border border-cyan-400/30 bg-cyan-500/10 px-1 py-2 text-center text-[10px] font-semibold text-cyan-300"
                     >
                       R{item.row}C{item.col}
                     </span>
                   ) : (
-                    <span key={i} className="rounded border border-dashed border-slate-300 py-2" />
+                    <span key={i} className="rounded border border-dashed border-white/15 py-2" />
                   ),
                 )}
               </div>
@@ -251,7 +251,7 @@ export default function Scanner({
             <div className="flex justify-end gap-3">
               <button
                 onClick={onClose}
-                className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300 hover:bg-white/10"
               >
                 Cancel
               </button>

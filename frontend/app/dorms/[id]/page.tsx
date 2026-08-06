@@ -196,7 +196,7 @@ export default function DormPage() {
         <>
           <button
             onClick={() => setScanOpen(true)}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
+            className="rounded-lg bg-gradient-to-r from-cyan-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90"
           >
             📷 Scan room
           </button>
@@ -205,7 +205,7 @@ export default function DormPage() {
             className={`rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${
               editing
                 ? "border-amber-300 bg-amber-50 text-amber-700"
-                : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+                : "border-white/10 bg-white/5 text-slate-200 hover:bg-white/10"
             }`}
           >
             {editing ? "Done editing" : "✎ Edit layout"}
@@ -216,10 +216,10 @@ export default function DormPage() {
       <div className="anim-fade-up mb-5 flex flex-wrap gap-2">
         {(
           [
-            ["normal", "Normal", "bg-green-50 text-green-700 border-green-200"],
-            ["warning", "Warning", "bg-amber-50 text-amber-700 border-amber-200"],
-            ["red", "Extra Drill", "bg-red-50 text-red-700 border-red-200"],
-            ["empty", "Empty", "bg-slate-50 text-slate-500 border-slate-200"],
+            ["normal", "Normal", "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"],
+            ["warning", "Warning", "border-amber-500/20 bg-amber-500/10 text-amber-300"],
+            ["red", "Extra Drill", "border-red-500/20 bg-red-500/10 text-red-300"],
+            ["empty", "Empty", "border-white/10 bg-white/5 text-slate-400"],
           ] as const
         ).map(([key, label, cls], i) => (
           <span
@@ -232,20 +232,20 @@ export default function DormPage() {
             {label} · {counts[key]}
           </span>
         ))}
-        <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-500">
+        <span className="rounded-full border border-white/5 bg-[#11183a] px-3 py-1.5 text-xs font-semibold text-slate-400">
           {map ? `${map.beds.filter((b) => b.cadet).length} cadets` : "—"}
         </span>
       </div>
 
       {editing && (
-        <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
+        <p className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-300">
           Drag beds to move/swap · drop on a dashed cell to place · click dashed
           cell to add · ✕ removes empty beds · edit location inline
         </p>
       )}
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-500/10 p-3 text-sm text-red-300">
           {error}
         </div>
       )}
@@ -274,21 +274,21 @@ export default function DormPage() {
         </section>
 
         <aside className="flex flex-col gap-6">
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-xl border border-white/5 bg-[#11183a] p-5 shadow-sm">
             <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
               Alert log
             </h2>
             <AlertPanel alerts={alerts} onResolve={handleResolve} />
           </section>
 
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-xl border border-white/5 bg-[#11183a] p-5 shadow-sm">
             <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
               Extra Drill schedule
             </h2>
             <EdPanel assignments={ed} />
           </section>
 
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-xl border border-white/5 bg-[#11183a] p-5 shadow-sm">
             <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">
               Send alert SMS
             </h2>
@@ -302,12 +302,12 @@ export default function DormPage() {
                 value={smsPhone}
                 onChange={(e) => setSmsPhone(e.target.value)}
                 placeholder="School number, e.g. +9198…"
-                className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
               <button
                 onClick={handleSendSms}
                 disabled={smsBusy}
-                className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-50"
+                className="shrink-0 rounded-lg bg-gradient-to-r from-cyan-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
               >
                 {smsBusy ? "Sending…" : "Send"}
               </button>
