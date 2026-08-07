@@ -114,7 +114,6 @@ export default function DormPage() {
 
   const withLayout = async (fn: () => Promise<unknown>, okMsg: string) => {
     setLayoutBusy(true);
-    setEditing(false);
     try {
       await fn();
       pushToast("ok", okMsg);
@@ -239,8 +238,9 @@ export default function DormPage() {
 
       {editing && (
         <p className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-300">
-          Drag beds to move/swap · drop on a dashed cell to place · click dashed
-          cell to add · ✕ removes empty beds · edit location inline
+          Tap a bed to select it · tap a dashed cell to move there · tap another
+          bed to swap · click dashed cell to add · ✕ removes empty beds · edit
+          location inline · mouse drag also works
         </p>
       )}
 

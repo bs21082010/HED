@@ -24,6 +24,8 @@ export default function Bed({
   bed,
   busy,
   editing,
+  selected,
+  onTapEdit,
   onAlert,
   onDragStart,
   onDragEnd,
@@ -34,6 +36,8 @@ export default function Bed({
   bed: BedWithCadet;
   busy: boolean;
   editing?: boolean;
+  selected?: boolean;
+  onTapEdit?: (bed: BedWithCadet) => void;
   onAlert: (bed: BedWithCadet, type: AlertType) => void;
   onDragStart?: (bedId: number) => void;
   onDragEnd?: () => void;
@@ -56,7 +60,11 @@ export default function Bed({
   );
 
   const handleClick = () => {
-    if (!bed.cadet || busy || editing) return;
+    if (editing) {
+      onTapEdit?.(bed);
+      return;
+    }
+    if (!bed.cadet || busy) return;
     clicks.current += 1;
     if (clicks.current === 2) {
       if (timer.current) clearTimeout(timer.current);
@@ -79,7 +87,7 @@ export default function Bed({
     <button
       type="button"
       onClick={handleClick}
-      onDoubleClick={handleClick}
+      onDoubleClick={editing ? undefined : handleClick}
       disabled={(!occupied || busy) && !editing}
       draggable={editing}
       onDragStart={(e) => {
@@ -107,7 +115,9 @@ className={`relative flex h-24 flex-col items-center justify-center rounded-lg b
         bed.status === "red"
           ? "anim-glow-red"
           : ""
-      } ${editing ? "cursor-grab active:cursor-grabbing ring-2 ring-blue-200" : ""} ${styles}`}
+      } ${editing ? "cursor-grab active:cursor-grabbing" : ""} ${
+        selected ? "ring-2 ring-cyan-400 ring-offset-2 ring-offset-[#11183a] scale-[1.03]" : ""
+      } ${styles}`}
 
     >
       <span className="pointer-events-none absolute left-1.5 top-1.5 text-[10px] font-semibold text-slate-400">

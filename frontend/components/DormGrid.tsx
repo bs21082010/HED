@@ -30,9 +30,30 @@ export default function DormGrid({
   const [confirm, setConfirm] = useState<BedWithCadet | null>(null);
   const [drillType, setDrillType] = useState<"ED" | "HED">("ED");
   const [overEmpty, setOverEmpty] = useState<string | null>(null);
+  const [selId, setSelId] = useState<number | null>(null);
   const dragId = useRef<number | null>(null);
 
   const byPos = new Map(beds.map((b) => [`${b.row}:${b.col}`, b]));
+
+  const handleTapBed = (bed: BedWithCadet) => {
+    if (selId === null) {
+      setSelId(bed.id);
+    } else if (selId === bed.id) {
+      setSelId(null);
+    } else {
+      onSwapBeds(selId, bed.id);
+      setSelId(null);
+    }
+  };
+
+  const handleTapEmpty = (row: number, col: number) => {
+    if (selId !== null) {
+      onMoveBed(selId, row, col);
+      setSelId(null);
+    } else {
+      onAddBed(row, col);
+    }
+  };
 
   const handleAlert = (bed: BedWithCadet, type: AlertType) => {
     if (type === "red") {
@@ -68,6 +89,8 @@ export default function DormGrid({
             bed={bed}
             busy={busy}
             editing={editing}
+            selected={selId === bed.id}
+            onTapEdit={() => handleTapBed(bed)}
             onAlert={handleAlert}
             onDragStart={(id) => {
               dragId.current = id;
@@ -90,8 +113,12 @@ export default function DormGrid({
           <button
             key={`${r}:${c}`}
             type="button"
-            title="Drop a bed here, or click to add a bed"
-            onClick={() => onAddBed(r, c)}
+            title={
+              selId !== null
+                ? "Click to move the selected bed here"
+                : "Click to add a bed"
+            }
+            onClick={() => handleTapEmpty(r, c)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();
@@ -104,11 +131,15 @@ export default function DormGrid({
             className={`flex min-h-[5.5rem] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed p-2 transition-colors ${
               overEmpty === `${r}:${c}` && dragId.current !== null
                 ? "border-cyan-400 bg-cyan-500/15"
-                : "border-white/10 text-slate-500 hover:border-cyan-400/40 hover:text-cyan-300"
+                : selId !== null
+                  ? "border-cyan-400/50 bg-cyan-500/5 text-cyan-300 hover:border-cyan-400"
+                  : "border-white/10 text-slate-500 hover:border-cyan-400/40 hover:text-cyan-300"
             }`}
           >
             <span className="text-[10px] font-semibold">R{r}C{c}</span>
-            <span className="text-xs font-semibold">+ add bed</span>
+            <span className="text-xs font-semibold">
+              {selId !== null ? "move here" : "+ add bed"}
+            </span>
           </button>,
         );
       }
