@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: "SSA Dormitory Alert",
   webDir: "out",
   server: {
-    androidScheme: "https",
+    androidScheme: "http",
     cleartext: true,
   },
 };

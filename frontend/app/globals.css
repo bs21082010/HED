@@ -1,4 +1,12 @@
-import "tailwindcss/tailwind.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background-color: #0b1026;
+  color-scheme: dark;
+}
 
 @keyframes fade-up {
   from {
