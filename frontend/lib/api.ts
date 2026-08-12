@@ -95,7 +95,7 @@ export type SmsResult = {
 };
 
 const DEFAULT_API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://192.168.1.34:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://192.168.1.39:8000";
 
 const STORAGE_KEY = "ssa_api_url";
 
@@ -126,23 +126,35 @@ export function resetApiUrl() {
 }
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${getApiUrl()}${path}`, {
-    headers: { "Content-Type": "application/json" },
-    cache: "no-store",
-    ...init,
-  });
-  if (!res.ok) {
-    let detail = res.statusText;
-    try {
-      const body = await res.json();
-      detail = body.detail ?? JSON.stringify(body);
-    } catch {
-      /* ignore */
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch(`${getApiUrl()}${path}`, {
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      ...init,
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      let detail = res.statusText;
+      try {
+        const body = await res.json();
+        detail = body.detail ?? JSON.stringify(body);
+      } catch {
+        /* ignore */
+      }
+      throw new Error(`${res.status}: ${detail}`);
     }
-    throw new Error(`${res.status}: ${detail}`);
+    if (res.status === 204) return undefined as T;
+    return res.json() as Promise<T>;
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new Error("timeout: no response from server");
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
   }
-  if (res.status === 204) return undefined as T;
-  return res.json() as Promise<T>;
 }
 
 export const api = {
@@ -187,6 +199,11 @@ export const api = {
     request<BedWithCadet>(`/api/beds/${bedId}`, {
       method: "PUT",
       body: JSON.stringify(patch),
+    }),
+  swapBeds: (a: number, b: number) =>
+    request<BedWithCadet[]>(`/api/beds/swap`, {
+      method: "POST",
+      body: JSON.stringify({ a, b }),
     }),
   addBed: (dormId: number, item: LayoutItem) =>
     request<BedWithCadet>(`/api/beds/dorms/${dormId}`, {

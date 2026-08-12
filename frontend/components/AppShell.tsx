@@ -129,6 +129,14 @@ export default function AppShell({
         </nav>
 
         <div className="border-t border-white/5 px-5 py-4">
+          <a
+            href="/HED.apk"
+            className="mb-2 flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-300 hover:bg-white/10"
+            download
+          >
+            <span>📱 Android App</span>
+            <span className="text-cyan-400">HED.apk</span>
+          </a>
           <p className="text-[10px] text-slate-600">
             Character is the highest virtue
           </p>
@@ -214,12 +222,12 @@ export default function AppShell({
             </div>
             <p className="mb-2 text-xs text-slate-400">
               Address of the school server running the alert system (example:
-              http://192.168.1.34:8000)
+              http://192.168.1.39:8000)
             </p>
             <input
               value={serverUrl}
               onChange={(e) => setServerUrl(e.target.value)}
-              placeholder="http://192.168.1.34:8000"
+              placeholder="http://192.168.1.39:8000"
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-cyan-400"
             />
             <div className="mt-3 flex items-center gap-2">

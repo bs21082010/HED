@@ -59,6 +59,11 @@ class BedUpdate(BaseModel):
     location: Optional[str] = Field(default=None, max_length=100)
 
 
+class BedSwap(BaseModel):
+    a: int
+    b: int
+
+
 class BedCreate(BaseModel):
     row: int = Field(ge=1, le=50)
     col: int = Field(ge=1, le=50)

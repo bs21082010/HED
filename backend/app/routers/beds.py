@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..models import Bed, Dorm
-from ..schemas import BedCreate, BedOut, BedUpdate
+from ..schemas import BedCreate, BedOut, BedSwap, BedUpdate
 
 router = APIRouter(prefix="/api/beds", tags=["beds"])
 
@@ -25,6 +25,27 @@ def add_bed(dorm_id: int, payload: BedCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(bed)
     return bed
+
+
+@router.post("/swap", response_model=list[BedOut])
+def swap_beds(payload: BedSwap, db: Session = Depends(get_db)):
+    """Swap two beds' positions in one transaction. Each cadet stays with their bed."""
+    a = db.get(Bed, payload.a)
+    b = db.get(Bed, payload.b)
+    if a is None or b is None:
+        raise HTTPException(status_code=404, detail="Bed not found")
+    if a.dorm_id != b.dorm_id:
+        raise HTTPException(status_code=400, detail="Beds must belong to the same dorm")
+    if a.id == b.id:
+        raise HTTPException(status_code=400, detail="Cannot swap a bed with itself")
+    temp = 1_000_000
+    db.execute(text("UPDATE beds SET row = :temp, col = :temp WHERE id = :a"), {"temp": temp, "a": a.id})
+    db.execute(text("UPDATE beds SET row = :row, col = :col WHERE id = :b"), {"row": a.row, "col": a.col, "b": b.id})
+    db.execute(text("UPDATE beds SET row = :row, col = :col WHERE id = :a"), {"row": b.row, "col": b.col, "a": a.id})
+    db.commit()
+    db.refresh(a)
+    db.refresh(b)
+    return [a, b]
 
 
 @router.put("/{bed_id}", response_model=BedOut)

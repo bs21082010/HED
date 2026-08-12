@@ -64,9 +64,11 @@ export default function DormPage() {
 
   useEffect(() => {
     refresh();
-    const interval = setInterval(refresh, 5000);
+    const interval = setInterval(() => {
+      if (!layoutBusy) refresh();
+    }, 5000);
     return () => clearInterval(interval);
-  }, [refresh]);
+  }, [refresh, layoutBusy]);
 
   const handleAlert = async (
     bed: BedWithCadet,
@@ -132,15 +134,7 @@ export default function DormPage() {
     withLayout(() => api.updateBed(bedId, { row, col }), `Bed moved to R${row}C${col}.`);
 
   const handleSwapBeds = (aId: number, bId: number) =>
-    withLayout(async () => {
-      const a = map?.beds.find((b) => b.id === aId);
-      const b = map?.beds.find((x) => x.id === bId);
-      if (!a || !b) return;
-      await Promise.all([
-        api.updateBed(aId, { row: b.row, col: b.col }),
-        api.updateBed(bId, { row: a.row, col: a.col }),
-      ]);
-    }, "Beds swapped.");
+    withLayout(() => api.swapBeds(aId, bId), "Beds swapped.");
 
   const handleAddBed = (row: number, col: number) =>
     withLayout(
